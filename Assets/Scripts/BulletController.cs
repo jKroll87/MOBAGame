@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    [SerializeField] private GameObject bulletDecal; //-> ???
+    [SerializeField] private GameObject bulletDecal;
 
     private float speed = 50f;
     private float timeToDestroy = 3f;
@@ -17,7 +17,6 @@ public class BulletController : MonoBehaviour
         Destroy(gameObject, timeToDestroy);
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
@@ -25,11 +24,12 @@ public class BulletController : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        //-> If shoot in the air, bullet still needs to be destroyed. (target: fake target)
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision other)
     {
-        
+        ContactPoint contact = other.GetContact(0);
+        GameObject.Instantiate(bulletDecal, contact.point + contact.normal * .0001f, Quaternion.LookRotation(contact.normal));
+        Destroy(gameObject);
     }
 }
